@@ -1,4 +1,5 @@
 import sys
+import re
 import datetime as dt
 import Services as s
 import General as gen
@@ -11,7 +12,7 @@ Hi {gen.get_user()}, Would you like to conduct a PC Health Check?
 Y/N
 """)
 if inp[0].lower() == 'y':
-    option = input(int("""
+    option = int(input("""
     Great! Do you have any specific areas you would like to scan? 
     1. All Aspects
     2. Storage
@@ -41,6 +42,20 @@ if inp[0].lower() == 'y':
               f"Your system has had {cpu_info['interrupts']} interrupts, this is the number of times a signal is "
               f"recieved by the CPU\n"
               f"All of this information is based on the last time you powered on your computer.")
+        dictionary = cpu.core_info()
+        print(f"\n-----------------------------------------------------------------------------------------------------"
+              f"\n The information shown below is a break down of all {cpu.core_count()} of your CPU cores in usage percentage"
+              f"\nIt indicates how much time of each core is spent doing what."
+              f"\n User is time you are using your computer, System is everything going on behind the scenes"
+              f"\n Idle is times when your core is not engaged in whatever is running on your computer"
+              f"\n interrupt is times your core is involved in signals sent by hardware or software"
+              f"\n Dpc is time spent servicing deferred procedure calls")
+        for key, value in dictionary.items():
+            s = str(value)
+            # users, system, idle, interrupt, dpc
+            matches = re.findall(r'=(\d+\.\d+)', s)
+            print(f"User takes up {matches[0]}%, System takes up {matches[1]}%, Idle takes up {matches[2]}%, Interrupt "
+                  f"takes up {matches[3]}%, DPC Takes up {matches[4]}%")
 
     if option == 4:
         pass
