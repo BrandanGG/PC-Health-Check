@@ -1,11 +1,5 @@
 import psutil
-
-print(psutil.cpu_freq())
-print(psutil.cpu_stats())
-print(psutil.cpu_times(percpu=True))
-test = psutil.cpu_times()
-print(psutil.cpu_times_percent(interval=1, percpu=True))
-
+import re
 
 # How many cores
 def core_count():
@@ -14,7 +8,15 @@ def core_count():
 
 # return list of information on each core
 def core_info():
-    pass
+    scputimes = str(psutil.cpu_times_percent(interval=1, percpu=True)) # Turn into str type so I can alter the string
+    starting = 1 # Starting index
+    ending = scputimes.index(']')-1 # Ending index
+    scputimes = scputimes[starting:ending]
+    scputimes += '),' # to lazy to fix regex
+    matches = re.findall(r'\((.*?)\)', scputimes) # Splitting the string based on what is inside the ()
+    individual_cores = {i+1: match for i, match in enumerate(matches)} # Create and assign keys / values
+    return individual_cores
+
 
 
 # Captures the information from cpu_stats
@@ -40,4 +42,4 @@ def check_cpu_usage():
     usage = psutil.cpu_percent(1)
     return usage
 
-
+core_info()
