@@ -1,18 +1,8 @@
 #!/usr/bin/env python3
 # this is a health check for a computer
-import shutil
 import psutil
-import os
 import re
 from pprint import pprint as pp
-
-
-def check_disk_usage(disk):
-    du = shutil.disk_usage(disk)
-    free = du.free / du.total * 100
-    return free > 20
-
-
 
 
 # This function is used to obtain all running services and store them in a dictionary. The key being the name and the
